@@ -11,9 +11,9 @@ the installation from the programm and add-ons is not near simple.
 - matlab with dh account
 
     - Signal Processing Toolbox
-    - statistics and Maschine Learning
+    - statistics and Maschine Learning'
 
-## Important files
+## Important files
 
 in root there is the:
 
