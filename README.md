@@ -28,6 +28,7 @@ in root there is the:
 Due: Saturday, 11 July 2026, 11:59 PM
 
 |Nr.| Kriterium | Beschreibung|
+|-|-|-|
 | 1 | Vortragsstil | Verständliche Sprache, freies Sprechen, Blickkontakt, angemessenes Sprechtempo, sicheres Auftreten |
 | 2 | Foliengestaltung | Übersichtliche und ansprechende Gestaltung, sinnvolle Verwendung von Grafiken, gute Lesbarkeit, angemessene Informationsdichte |
 | 3 | Roter Faden | Klare Struktur, nachvollziehbarer Aufbau, logische Übergänge zwischen Motivation, Umsetzung und Ergebnissen |
