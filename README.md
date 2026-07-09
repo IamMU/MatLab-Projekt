@@ -39,3 +39,10 @@ Due: Saturday, 11 July 2026, 11:59 PM
 | 8 | Visualisierung und Ergebnisdarstellung | Aussagekräftige Diagramme, Wasserfalldarstellungen, Tabellen und Grafiken; verständliche Interpretation der Ergebnisse |
 | 9 | Selbstständigkeit und Problemlösung | Eigenständige Erweiterungen, Umgang mit Schwierigkeiten, kritische Reflexion von Fehlern und Grenzen der Lösung |
 | 10 | Beantwortung von Fragen | Fachlich fundierte Antworten, Verständnis der eigenen Implementierung und der verwendeten Verfahren |
+
+## Plots in this moment
+
+![alt](plots_right_now/2026-07-09-032044_hyprshot.png)
+![alt](plots_right_now/2026-07-09-032059_hyprshot.png)
+![alt](plots_right_now/2026-07-09-032110_hyprshot.png)
+![alt](plots_right_now/2026-07-09-032122_hyprshot.png)
