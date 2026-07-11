@@ -18,7 +18,10 @@ function plot_waterfall(spectra, freqs, time_windows, config)
     figure('Name', '3D Wasserfall HRV', 'Position', FIG_POS);
     
     % Waterfall Plot (X=Frequenzen, Y=Zeit, Z=Spektren)
-    waterfall(f_plot, time_hours, s_plot);
+    s_plot_log = 10 * log10(s_plot + eps); 
+
+    waterfall(f_plot, time_hours, s_plot_log);
+    zlabel('Leistung (dB / Hz)');
     hold on;
     
     % Markierung der HRV-Bänder
