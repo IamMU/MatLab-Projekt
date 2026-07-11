@@ -31,7 +31,7 @@ Das Projekt ist wie folgt strukturiert:
 └── results/      # Ausgabeordner für generierte Graphen und Ergebnisse
 ```
 
-## Last Generated Plots
+## Generierte Graphen 
 ![HRV_Trends](assets/hrv_trends.png)
 ![Longterm_RR](assets/longterm_rr_plot.png)
 ![Segment_Comparison](assets/segment_comparison.png)
