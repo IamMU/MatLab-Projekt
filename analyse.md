@@ -3,14 +3,14 @@
 **Datum:** 11. Juli 2026
 ---
 ## 1. Einführung in das Thema
-**Herzfrequenzvariabilität (HRV)** beschreibt die natürlichen Schwankungen der Zeitintervalle zwischen aufeinanderfolgenden Herzschlägen (RR-Intervalle). Entgegen der intuitiven Annahme schlägt ein gesundes Herz nicht wie ein Metronom. Die Zeitintervalle variieren kontinuierlich im Millisekundenbereich. Diese Variabilität ist ein hochsensibler Indikator für die Anpassungsfähigkeit und Gesundheit des **autonomen Nervensystems (ANS)**.
+**Herzfrequenzvariabilität (HRV)** ist die natürlichen Schwankungen der Zeitintervalle zwischen aufeinanderfolgenden Herzschlägen (RR-Intervalle). gegen der intuitiven Annahme schlägt ein gesundes Herz nicht wie ein Metronom. Die Zeitintervalle verändern sich im Millisekundenbereich. Diese Variabilität ist ein hochsensibler Indikator für die Anpassungsfähigkeit und Gesundheit des **autonomen Nervensystems (ANS)**.
 Das ANS steuert unbewusste Körperfunktionen und besteht im Wesentlichen aus zwei gegensätzlichen Systemen:
 * **Das sympathische Nervensystem („Gaspedal"):** Wird bei Stress, körperlicher Aktivität oder Gefahr aktiviert. Es erhöht die Herzfrequenz und *senkt* die HRV.
-* **Das parasympathische Nervensystem („Bremse", Vagusnerv):** Dominiert in Ruhe-, Erholungs- und Schlafphasen. Es senkt die Herzfrequenz und *erhöht* die HRV, insbesondere in Verbindung mit der Atmung (respiratorische Sinusarrhythmie – RSA).
-Da es sich bei der HRV um ein sogenanntes **nichtstationäres Signal** handelt, schwankt sie im Laufe eines 24-Stunden-Zeitraums erheblich (zirkadianer Rhythmus). Ziel dieses Projekts ist es, diese komplexen Langzeitveränderungen aus einem EDF-Datensatz zu extrahieren und sie mittels Frequenzbandanalyse (FFT) gemäß der medizinischen Richtlinie S2k zu analysieren.
+* **Das parasympathische Nervensystem („Bremse", Vagusnerv):** Dominiert in Ruhe-, Erholungs- und Schlafphasen. Es sinkt die Herzfrequenz und *erhöht* die HRV, vor allem in Verbindung mit der Atmung (respiratorische Sinusarrhythmie – RSA).
+Da es sich bei der HRV um ein sogenanntes **nichtstationäres Signal** handelt, ändert sie sich im Laufe eines 24-Stunden-Zeitraums erheblich (zirkadianer Rhythmus). Ziel dieses Projekts ist es, diese komplexen Langzeitveränderungen aus einem EDF-Datensatz zu extrahieren und sie mittels Frequenzbandanalyse (FFT) gemäß der medizinischen Richtlinie S2k zu analysieren.
 ---
 ## 2. Programmarchitektur und Funktionalität
-Um die riesigen Datenmengen (24 Stunden bei beispielsweise 250 Hz) effizient zu verarbeiten, wurde das MATLAB-Projekt streng modular und parametrisch gestaltet. Die Steuerung erfolgt über eine zentrale `main.m`-Datei.
+Um die großen Dateien (24 Stunden bei beispielsweise 250 Hz) effizient zu verarbeiten, wurde das MATLAB-Projekt streng modular und parametrisch gestaltet. Die Steuerung erfolgt über eine zentrale `main.m`-Datei.
 ### Die Verarbeitungs-Pipeline (Ordnerstruktur `/src`):
 1. **Import (`load_ecg_data`):** Einlesen der rohen EKG-Werte aus dem `.EDF`-Format (`/data`).
 2. **Vorverarbeitung (`preprocess_ecg`):** Stabilisierung des Signals mithilfe eines Hochpassfilters (zur Kompensation der Basisliniendrift), eines Bandsperrfilters (zur Kompensation des 50-Hz-Netzbrummens) und eines Tiefpassfilters (zur Kompensation von Muskelartefakten).
