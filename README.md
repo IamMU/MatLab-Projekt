@@ -34,5 +34,8 @@ Das Projekt ist wie folgt strukturiert:
 ## Generierte Graphen 
 ![HRV_Trends](assets/hrv_trends.png)
 ![Longterm_RR](assets/longterm_rr_plot.png)
+![preprocessing_plot](assets/preprocessing_plot.png)
+![r_peaks_plot](assets/r_peaks_plot.png)
+![rr_zoom_plot](assets/rr_zoom_plot.png)
 ![Segment_Comparison](assets/segment_comparison.png)
 ![Waterfall](assets/waterfall_plot.png)
