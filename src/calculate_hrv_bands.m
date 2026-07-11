@@ -1,8 +1,7 @@
 % =========================================================================
-% Datei: calculate_hrv_bands.m
-% Was sie macht: Berechnet die Leistung in den VLF-, LF- und HF-Bändern.
-% Wie sie es macht: Sucht die passenden Frequenz-Indizes und integriert das 
-% Leistungsspektrum in diesen Bereichen (trapz). Berechnet LF/HF-Ratio.
+% Berechnet die Leistung in den VLF-, LF- und HF-Bändern.
+% Sucht die passenden Frequenz-Indizes und integriert das Leistungsspektrum
+% in diesen Bereichen (trapz). Berechnet LF/HF-Ratio.
 % =========================================================================
 function hrv_results = calculate_hrv_bands(spectra, freqs, config)
     num_windows = size(spectra, 1);

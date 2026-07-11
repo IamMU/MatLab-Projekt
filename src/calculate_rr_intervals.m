@@ -1,8 +1,7 @@
 % =========================================================================
-% Datei: calculate_rr_intervals.m
-% Was sie macht: Berechnet die Abstände zwischen aufeinanderfolgenden R-Zacken.
-% Wie sie es macht: Bildet die Differenz (diff) der R-Zacken-Indizes und 
-% rechnet diese über die Abtastrate in Sekunden (Tachogramm) um.
+% Berechnet die Abstände zwischen aufeinanderfolgenden R-Zacken.
+% Bildet die Differenz (diff) der R-Zacken-Indizes und rechnet diese
+% über die Abtastrate in Sekunden (Tachogramm) um.
 % =========================================================================
 function [rr_intervals, rr_times] = calculate_rr_intervals(r_peaks_loc, fs)
     rr_intervals = diff(r_peaks_loc) / fs; % in Sekunden

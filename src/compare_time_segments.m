@@ -1,8 +1,7 @@
 % =========================================================================
-% Datei: compare_time_segments.m
-% Was sie macht: Vergleicht statistisch verschiedene Zeitabschnitte.
-% Wie sie es macht: Teilt die Daten z.B. in erste und zweite Hälfte (oder 
-% Tag/Nacht) auf und erstellt Boxplots zum Vergleich der Parameter.
+% Vergleicht statistisch verschiedene Zeitabschnitte.
+% Teilt die Daten z.B. in erste und zweite Hälfte (oder Tag/Nacht) 
+% auf und erstellt Boxplots zum Vergleich der Parameter.
 % =========================================================================
 function compare_time_segments(time_windows, hrv_results, config)
     % Beispiel: Einfache Trennung in 1. Hälfte vs. 2. Hälfte der Messung

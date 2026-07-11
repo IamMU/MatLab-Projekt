@@ -1,8 +1,7 @@
 % =========================================================================
-% Datei: load_ecg_data.m
-% Was sie macht: Importiert EKG-Datensätze im EDF-Format.
-% Wie sie es macht: Nutzt die MATLAB-interne Funktion edfread, extrahiert 
-% das erste verfügbare Signal und generiert einen Zeitvektor.
+% Importiert EKG-Datensätze im EDF-Format.
+% Nutzt die MATLAB-interne Funktion edfread, extrahiert das erste verfügbare
+% Signal und generiert einen Zeitvektor.
 % =========================================================================
 function [ecg_signal, fs, t] = load_ecg_data(filepath)
     info = edfinfo(filepath);

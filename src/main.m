@@ -1,13 +1,9 @@
 clear; clc; close all;
 
-%% 1. Konfiguration & Konstanten (Vermeidung von Magic Numbers)
+%---Konfiguration & Konstanten ---
 
-% Dynamische Pfadgenerierung (macht das Skript unabhängig vom "Current Folder")
-% 'mfilename' findet den Ort dieser main.m Datei (den /src Ordner)
 src_dir = fileparts(mfilename('fullpath'));
 
-% fullfile baut den Pfad betriebssystemunabhängig (Windows/Mac/Linux) zusammen:
-% Gehe von /src einen Ordner nach oben ('..'), dann in /data bzw. /results
 config.paths.data = fullfile(src_dir, '..', 'data', '06-51-02.EDF');
 config.paths.results = fullfile(src_dir, '..', 'results');
 
@@ -28,10 +24,10 @@ config.bands.vlf = [0.0033, 0.04];
 config.bands.lf  = [0.04, 0.15];
 config.bands.hf  = [0.15, 0.40];
 
-% Ordner für Ergebnisse erstellen, falls nicht vorhanden
+% Ordner für Ergebnisse, falls nicht vorhanden
 if ~exist(config.paths.results, 'dir'), mkdir(config.paths.results); end
 
-%% --- Pipeline Ausführung
+%% --- Pipeline Ausführung ---
 fprintf('Lade EKG Daten...\n');
 [ecg_signal, fs, t] = load_ecg_data(config.paths.data);
 
@@ -53,7 +49,7 @@ fprintf('Berechne gleitendes FFT-Spektrum...\n');
 fprintf('Berechne HRV-Frequenzbänder...\n');
 hrv_results = calculate_hrv_bands(spectra, freqs, config);
 
-%% --- Visualisierung
+%% --- Visualisierung ---
 fprintf('Erstelle Plots...\n');
 plot_longterm_rr(rr_times, rr_intervals, config);
 plot_waterfall(spectra, freqs, time_windows, config);

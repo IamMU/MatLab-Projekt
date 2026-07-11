@@ -1,8 +1,7 @@
 % =========================================================================
-% Datei: plot_hrv_trends.m
-% Was sie macht: Visualisiert die zeitlichen Trends (LF, HF, LF/HF).
-% Wie sie es macht: Erstellt gestapelte Subplots (plot), um die autonome 
-% Regulation (Sympathikus/Parasympathikus) über den Langzeitverlauf zu zeigen.
+% Visualisiert die zeitlichen Trends (LF, HF, LF/HF).
+% Erstellt gestapelte Subplots (plot), um die autonome Regulation
+% (Sympathikus/Parasympathikus) über den Langzeitverlauf zu zeigen.
 % =========================================================================
 function plot_hrv_trends(time_windows, hrv_results, config)
     time_hours = time_windows / 3600;

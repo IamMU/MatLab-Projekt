@@ -7,9 +7,10 @@
 function plot_waterfall(spectra, freqs, time_windows, config)
     figure('Name', '3D Waterfall HRV Spectrum', 'Position', [100 100 800 600]);
     
+    % Zeit in Stunden umrechnen
     time_hours = time_windows / 3600;
     
-    % Relevanter Frequenzbereich
+    % Relevanter Frequenzbereich (HRV ist meist nur bis 0.5 Hz interessant)
     rel_idx = freqs <= 0.5;
     
     % Waterfall Plot
@@ -20,6 +21,7 @@ function plot_waterfall(spectra, freqs, time_windows, config)
     ylabel('Zeit (Stunden)');
     zlabel('Spektrale Leistung (s^2/Hz)');
     
+    % Ansicht für 3D-Effekt optimieren
     view(-35, 45); 
     colormap jet;
     

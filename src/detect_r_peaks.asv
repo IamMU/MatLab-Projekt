@@ -9,6 +9,7 @@ function [r_peaks_val, r_peaks_loc] = detect_r_peaks(ecg_signal, fs)
     % Wir nutzen round(), damit die Zahl für findpeaks ein Integer ist
     min_dist = round(0.3 * fs); 
     
+    % ROBUSTER SCHWELLENWERT:
     % Da das Signal im Preprocessing hochpassgefiltert wurde, schwankt es um 0.
     % Das 2.5-fache der Standardabweichung ist ein exzellenter Filter für 
     % saubere R-Zacken, der riesige Artefakte ignoriert.
@@ -27,5 +28,6 @@ function [r_peaks_val, r_peaks_loc] = detect_r_peaks(ecg_signal, fs)
             'MinPeakDistance', min_dist);
     end
     
+    % Kleines Konsolen-Feedback, damit du siehst, dass es geklappt hat
     fprintf('   -> %d R-Zacken erfolgreich erkannt.\n', length(r_peaks_loc));
 end

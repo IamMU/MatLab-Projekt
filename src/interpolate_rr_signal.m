@@ -1,9 +1,8 @@
 % =========================================================================
-% Datei: interpolate_rr_signal.m
-% Was sie macht: Überführt die unregelmäßigen RR-Intervalle in ein 
-% äquidistantes Signal für die spätere FFT.
-% Wie sie es macht: Nutzt interp1 (Spline-Interpolation), um die RR-Werte auf 
-% ein festes Zeitraster (z.B. 4 Hz) abzubilden.
+% Überführt die unregelmäßigen RR-Intervalle in ein äquidistantes
+% Signal für die spätere FFT.
+% Nutzt interp1 (Spline-Interpolation), um die RR-Werte auf ein festes
+% Zeitraster (z.B. 4 Hz) abzubilden.
 % =========================================================================
 function [rr_interp, t_interp] = interpolate_rr_signal(rr_intervals, rr_times, config)
     fs_interp = config.hrv.interp_fs;
