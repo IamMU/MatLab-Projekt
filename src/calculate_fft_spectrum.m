@@ -17,8 +17,8 @@ function [spectra, freqs, time_windows] = calculate_fft_spectrum(rr_interp, conf
     % S = Kurzzeit-Fouriertransformation, F = Frequenzen, T = Zeiten, P = Leistungsspektrum
     [~, freqs, time_windows, P] = spectrogram(rr_interp, win, noverlap, nfft, fs, 'power');
     
-    % Die Toolbox liefert P als [Frequenz x Zeit]. Um bisherigen 
-    % Dimensionen [Zeit x Frequenz] beizubehalten, wird P transponiert.
+    % Die Toolbox liefert P als [Frequenz x Zeit]. 
+    % Um bisherigen  Dimensionen [Zeit x Frequenz] beizubehalten, wird P transponiert.
     spectra = P';
     
     time_windows = time_windows(:); 
