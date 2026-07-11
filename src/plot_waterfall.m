@@ -1,0 +1,34 @@
+% =========================================================================
+% Datei: plot_waterfall.m
+% Was sie macht: Erzeugt ein 3D-Wasserfalldiagramm der Spektren über die Zeit.
+% Wie sie es macht: Nutzt die waterfall() Funktion. Die X-Achse ist die 
+% Frequenz (begrenzt auf max. 0.5 Hz zur besseren Sichtbarkeit der HRV-Bänder), 
+% Y-Achse ist die Zeit in Stunden, Z-Achse die spektrale Leistung.
+% =========================================================================
+function plot_waterfall(spectra, freqs, time_windows, config)
+    figure('Name', '3D Waterfall HRV Spectrum', 'Position', [100 100 800 600]);
+    
+    % Zeit in Stunden umrechnen
+    time_hours = time_windows / 3600;
+    
+    % Relevanter Frequenzbereich (HRV ist meist nur bis 0.5 Hz interessant)
+    rel_idx = freqs <= 0.5;
+    
+    % Waterfall Plot
+    waterfall(freqs(rel_idx), time_hours, spectra(:, rel_idx));
+    
+    title('3D-Wasserfalldarstellung der HRV-Spektren');
+    xlabel('Frequenz (Hz)');
+    ylabel('Zeit (Stunden)');
+    zlabel('Spektrale Leistung (s^2/Hz)');
+    
+    % Ansicht für 3D-Effekt optimieren
+    view(-35, 45); 
+    colormap jet;
+    
+    % Markierung der HRV-Bänder als Text
+    text(mean(config.bands.lf), min(time_hours), max(spectra(:))*0.8, 'LF', 'Color', 'r', 'FontWeight', 'bold');
+    text(mean(config.bands.hf), min(time_hours), max(spectra(:))*0.8, 'HF', 'Color', 'b', 'FontWeight', 'bold');
+
+    saveas(gcf, fullfile(config.paths.results, 'waterfall_plot.png'));
+end
