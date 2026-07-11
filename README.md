@@ -9,16 +9,6 @@ Für die vollständige Ausführung des Quellcodes wird eine gültige **MATLAB-Li
 * **Signal Processing Toolbox** (MathWorks)
 * **Statistics and Machine Learning Toolbox** (MathWorks)
 
-## Structure
-- results/ - Stores the generated graphs
-- data/ - Stores the EDF files
-- src/ - stores the source code
-
-## Last Generated Plots
-![HRV_Trends](assets/hrv_trends.png)
-![Longterm_RR](assets/longterm_rr_plot.png)
-![Segment_Comparison](assets/segment_comparison.png)
-![Waterfall](assets/waterfall_plot.png)
 ## 2. Schnellstart
 
 Folgen Sie diesen Schritten, um die Analyse zu starten und die Graphen zu rendern:
@@ -41,9 +31,8 @@ Das Projekt ist wie folgt strukturiert:
 └── results/      # Ausgabeordner für generierte Graphen und Ergebnisse
 ```
 
-## Generierte Plots
-
-![HRV_Trend](results/hrv_trends.png)
-![Longterm_RR](results/longterm_rr_plot.png)
-![Segment_Comparison](results/segment_comparison.png)
-![Waterfall](results/waterfall_plot.png)
+## Last Generated Plots
+![HRV_Trends](assets/hrv_trends.png)
+![Longterm_RR](assets/longterm_rr_plot.png)
+![Segment_Comparison](assets/segment_comparison.png)
+![Waterfall](assets/waterfall_plot.png)
