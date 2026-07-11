@@ -26,7 +26,7 @@ config.bands.hf  = [0.15, 0.40];
 % Ordner für Ergebnisse, falls nicht vorhanden
 if ~exist(config.paths.results, 'dir'), mkdir(config.paths.results); end
 
-%% --- Pipeline Ausführung
+% --- Pipeline Ausführung
 fprintf('Lade EKG Daten...\n');
 [ecg_signal, fs, t] = load_ecg_data(config.paths.data);
 
@@ -48,7 +48,7 @@ fprintf('Berechne gleitendes FFT-Spektrum...\n');
 fprintf('Berechne HRV-Frequenzbänder...\n');
 hrv_results = calculate_hrv_bands(spectra, freqs, config);
 
-%% --- Visualisierung & Performance-Messung 
+% --- Visualisierung & Performance-Messung 
 fprintf('\nErstelle Visualisierungen im chronologischen Ablauf...\n');
 
 % Vorverarbeitung & Signalgüte (Aufgabe 2.2 & 2.3)
