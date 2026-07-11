@@ -1,8 +1,7 @@
 clear; clc; close all;
 
-% --- Konfiguration & Konstanten 
+% --- Konfiguration & Konstanten ---
 src_dir = fileparts(mfilename('fullpath'));
-
 config.paths.data = fullfile(src_dir, '..', 'data', '06-51-02.EDF');
 config.paths.results = fullfile(src_dir, '..', 'assets');
 
@@ -23,33 +22,41 @@ config.bands.vlf = [0.0033, 0.04];
 config.bands.lf  = [0.04, 0.15];
 config.bands.hf  = [0.15, 0.40];
 
-% Ordner für Ergebnisse, falls nicht vorhanden
+% Ordner für Ergebnisse erstellen, falls nicht vorhanden
 if ~exist(config.paths.results, 'dir'), mkdir(config.paths.results); end
 
-% --- Pipeline Ausführung
-fprintf('Lade EKG Daten...\n');
+% Initialisierung der Performance-Statistiken
+stats = struct();
+mem_info = struct();
+
+%% --- Pipeline Ausführung mit Performance-Analyse ---
+
+% 1. Laden & Preprocessing
+t_start = tic;
 [ecg_signal, fs, t] = load_ecg_data(config.paths.data);
-
-fprintf('Vorverarbeitung des Signals...\n');
 ecg_clean = preprocess_ecg(ecg_signal, fs, config);
+stats.preprocess = toc(t_start);
 
-fprintf('Erkenne R-Zacken...\n');
+% Speicherbedarf messen
+info = whos('ecg_signal');
+mem_info.ecg_bytes = info.bytes;
+
+% 2. R-Peak Erkennung
+t_start = tic;
 [r_peaks_val, r_peaks_loc] = detect_r_peaks(ecg_clean, fs);
+stats.peaks = toc(t_start);
 
-fprintf('Berechne RR-Intervalle...\n');
+% 3. RR-Intervalle & HRV-Berechnung
+t_start = tic;
 [rr_intervals, rr_times] = calculate_rr_intervals(r_peaks_loc, fs);
-
-fprintf('Interpoliere RR-Signal...\n');
 [rr_interp, t_interp] = interpolate_rr_signal(rr_intervals, rr_times, config);
-
-fprintf('Berechne gleitendes FFT-Spektrum...\n');
 [spectra, freqs, time_windows] = calculate_fft_spectrum(rr_interp, config);
-
-fprintf('Berechne HRV-Frequenzbänder...\n');
 hrv_results = calculate_hrv_bands(spectra, freqs, config);
+stats.fft = toc(t_start);
 
-% --- Visualisierung & Performance-Messung 
-fprintf('\nErstelle Visualisierungen im chronologischen Ablauf...\n');
+% --- Visualisierung & Performance-Messung ---
+t_start = tic;
+fprintf('Erstelle Visualisierungen im chronologischen Ablauf...\n');
 
 % Vorverarbeitung & Signalgüte (Aufgabe 2.2 & 2.3)
 plot_preprocessing(t, ecg_signal, ecg_clean, config);
@@ -66,4 +73,9 @@ plot_hrv_trends(time_windows, hrv_results, config);
 % Statistische Auswertung (Aufgabe 2.11)
 compare_time_segments(time_windows, hrv_results, config);
 
-fprintf('\nAlle Ergebnisse wurden erfolgreich im Ordner "%s" gespeichert!\n', config.paths.results);
+stats.vis = toc(t_start);
+
+% Performance-Bericht erstellen (Aufgabe 2.12)
+analyse_performance(stats, mem_info, config);
+
+fprintf('\nPipeline abgeschlossen. Alle Ergebnisse wurden im Ordner "%s" gespeichert!\n', config.paths.results);
