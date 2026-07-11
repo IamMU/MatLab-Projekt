@@ -5,23 +5,28 @@
 % Bewegungsartefakten zu sein.
 % =========================================================================
 function [r_peaks_val, r_peaks_loc] = detect_r_peaks(ecg_signal, fs)
-    % Minimaler Abstand zwischen Herzschlägen (z.B. 0.3s entspricht max. 200 BPM)
-    % Wir nutzen round(), damit die Zahl für findpeaks ein Integer ist
-    min_dist = round(0.3 * fs); 
+    % Konstanten definieren
+    MIN_RR_DIST_SEC = 0.3;         % Entspricht max. 200 BPM
+    STD_MULTIPLIER  = 2.5;         % Primärer Schwellenwert-Faktor
+    FALLBACK_PEAKS  = 10;          % Mindestanzahl für Fallback-Auslösung
+    FALLBACK_MULT   = 1.0;         % Reduzierter Schwellenwert-Faktor
+
+    % Minimaler Abstand zwischen Herzschlägen
+    min_dist = round(MIN_RR_DIST_SEC * fs); 
     
     % Da das Signal im Preprocessing hochpassgefiltert wurde, schwankt es um 0.
     % Das 2.5-fache der Standardabweichung ist ein exzellenter Filter für 
     % saubere R-Zacken, der riesige Artefakte ignoriert.
-    threshold = 2.5 * std(ecg_signal, 'omitnan');
+    threshold = STD_MULTIPLIER * std(ecg_signal, 'omitnan');
     
     [r_peaks_val, r_peaks_loc] = findpeaks(ecg_signal, ...
         'MinPeakHeight', threshold, ...
         'MinPeakDistance', min_dist);
         
     % Sicherheits-Rückfall (Fallback), falls das Signal ungewöhnlich flach ist
-    if length(r_peaks_loc) < 10
+    if length(r_peaks_loc) < FALLBACK_PEAKS
         fprintf('\n   [!] Warnung: Fast keine R-Zacken gefunden. Reduziere Schwellenwert...\n');
-        threshold = 1.0 * std(ecg_signal, 'omitnan');
+        threshold = FALLBACK_MULT * std(ecg_signal, 'omitnan');
         [r_peaks_val, r_peaks_loc] = findpeaks(ecg_signal, ...
             'MinPeakHeight', threshold, ...
             'MinPeakDistance', min_dist);
