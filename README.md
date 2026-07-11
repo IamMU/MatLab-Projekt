@@ -1,48 +1,38 @@
-# Matlab Projekt
+# Visualisierung langfristiger HRV-Änderungen
 
-## quick start
-**Note**
-a quick start guide is right now not possible.
+Dieses MATLAB-Projekt dient der automatisierten Verarbeitung, Analyse und langfristigen Visualisierung von Daten zur Herzratenvariabilität (HRV).
 
-the installation from the programm and add-ons is not near simple.
+## 1. Voraussetzungen & Add-ons
 
-## Dependencies
+Für die vollständige Ausführung des Quellcodes wird eine gültige **MATLAB-Lizenz** benötigt. Zudem müssen die folgenden Toolboxen (Add-ons) von MathWorks installiert sein:
 
-- matlab with dh account
+* **Signal Processing Toolbox** (MathWorks)
+* **Statistics and Machine Learning Toolbox** (MathWorks)
 
-    - Signal Processing Toolbox
-    - statistics and Maschine Learning'
+## 2. Schnellstart
 
-## Important files
+Folgen Sie diesen Schritten, um die Analyse zu starten und die Graphen zu rendern:
 
-in root there is the:
+1. Installieren Sie MATLAB inklusive der erforderlichen [Add-ons](#1-voraussetzungen--add-ons).
+2. Kopieren Sie die gesamte Ordnerstruktur in Ihr aktives MATLAB-Verzeichnis.
+3. Platzieren Sie die zu analysierenden Datensätze im Ordner `data/`.
+4. Öffnen Sie die Datei `main.m` im Ordner `src/` und führen Sie diese in MATLAB aus.
 
-- EDF file which to analyze
+Die Graphen werden nach der Ausführung automatisch im Interface geöffnet und parallel im Ordner `results/` exportiert.
 
-- Exercise sheet
+## 3. Projektstruktur
 
-- a pregenerated programm which to make better
+Das Projekt ist wie folgt strukturiert:
 
-## Infos:
+```text
+├── data/         # Ablageort der auszuwertenden Eingangsdaten
+├── src/          # Speicherort des Quellcodes (Skripte und Funktionen)
+│   └── main.m    # Zentrales Hauptskript zur Ausführung der Pipeline
+└── results/      # Ausgabeordner für generierte Graphen und Ergebnisse
+```
 
-Due: Saturday, 11 July 2026, 11:59 PM
-
-|Nr.| Kriterium | Beschreibung|
-|-|-|-|
-| 1 | Vortragsstil | Verständliche Sprache, freies Sprechen, Blickkontakt, angemessenes Sprechtempo, sicheres Auftreten |
-| 2 | Foliengestaltung | Übersichtliche und ansprechende Gestaltung, sinnvolle Verwendung von Grafiken, gute Lesbarkeit, angemessene Informationsdichte |
-| 3 | Roter Faden | Klare Struktur, nachvollziehbarer Aufbau, logische Übergänge zwischen Motivation, Umsetzung und Ergebnissen |
-| 4 | Fachliches Niveau | Qualität der entwickelten Lösung, fachlich korrekte Signalverarbeitung, sinnvolle Interpretation der Ergebnisse |
-| 5 | Quantitativer Output des Projekts | Umfang der Implementierung, Anzahl realisierter Funktionen, Tiefe der Analysen, Qualität der Visualisierungen und Auswertungen |
-| 6 | Code-Qualität | Modularer Aufbau, Lesbarkeit, Kommentare, sinnvolle Variablennamen, Wiederverwendbarkeit, Einhaltung guter Programmierpraktiken |
-| 7 | Methodische Umsetzung | Begründete Auswahl von Algorithmen und Parametern (z. B. Filter, FFT, Fensterung, Interpolation), nachvollziehbare Vorgehensweise |
-| 8 | Visualisierung und Ergebnisdarstellung | Aussagekräftige Diagramme, Wasserfalldarstellungen, Tabellen und Grafiken; verständliche Interpretation der Ergebnisse |
-| 9 | Selbstständigkeit und Problemlösung | Eigenständige Erweiterungen, Umgang mit Schwierigkeiten, kritische Reflexion von Fehlern und Grenzen der Lösung |
-| 10 | Beantwortung von Fragen | Fachlich fundierte Antworten, Verständnis der eigenen Implementierung und der verwendeten Verfahren |
-
-## Plots in this moment
-
-![alt](plots_right_now/2026-07-09-032044_hyprshot.png)
-![alt](plots_right_now/2026-07-09-033514_hyprshot.png)
-![alt](plots_right_now/2026-07-09-032110_hyprshot.png)
-![alt](plots_right_now/2026-07-09-032122_hyprshot.png)
+## Generierte Graphen 
+![HRV_Trends](assets/hrv_trends.png)
+![Longterm_RR](assets/longterm_rr_plot.png)
+![Segment_Comparison](assets/segment_comparison.png)
+![Waterfall](assets/waterfall_plot.png)

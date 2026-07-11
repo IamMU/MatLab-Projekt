@@ -1,0 +1,1 @@
+Wir haben "06-51-02.EDF" von "https://nextcloud.dhbw-stuttgart.de/index.php/s/fkcfHPMFjxHkb6w"
