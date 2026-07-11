@@ -5,9 +5,9 @@
 % gefilterten Signal in zwei untereinanderliegenden Subplots.
 % =========================================================================
 function plot_preprocessing(t, ecg_signal, ecg_clean, config)
-    % --- Konstanten ---
+    % Konstanten
     SEGMENT_START_SEC = 3600; % Start bei Stunde 1
-    SEGMENT_DUR_SEC   = 5;    % 5 Sekunden Dauer für gute Sichtbarkeit
+    SEGMENT_DUR_SEC   = 5;   
     FIG_POS           = [100, 100, 800, 600];
 
     % Zeitindex für den gewünschten Abschnitt ermitteln

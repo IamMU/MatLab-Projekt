@@ -4,13 +4,13 @@
 % Signal und generiert einen Zeitvektor.
 % =========================================================================
 function [ecg_signal, fs, t] = load_ecg_data(filepath)
-    % --- Konstanten
+    % Konstanten
     DEFAULT_CH_IDX = 1; % Fallback, falls kein EKG-Name gefunden wird
 
     info = edfinfo(filepath);
     tt = edfread(filepath);
     
-    % Dynamische Suche nach dem EKG-Kanal (ignoriert Groß-/Kleinschreibung)
+    % Dynamische Suche nach dem EKG-Kanal 
     varNames = tt.Properties.VariableNames;
     ecg_idx = find(contains(lower(varNames), 'ecg') | contains(lower(varNames), 'ekg'), 1);
     
@@ -18,7 +18,7 @@ function [ecg_signal, fs, t] = load_ecg_data(filepath)
         ecg_idx = DEFAULT_CH_IDX; % Fallback auf den ersten Kanal
     end
     
-    % Typsicheres Extrahieren der Daten
+    % Extrahieren der Daten
     raw_data = tt{:, ecg_idx}; 
     if iscell(raw_data)
         ecg_signal = cell2mat(raw_data); 

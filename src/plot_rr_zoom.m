@@ -5,10 +5,10 @@
 % um die lokale Variabilität im Detail vergleichen zu können.
 % =========================================================================
 function plot_rr_zoom(rr_times, rr_intervals, config)
-    % --- Konstanten ---
-    ZOOM1_START_HOUR = 2;  % Beispiel: Frühe Phase (Nacht/Ruhe)
-    ZOOM2_START_HOUR = 10; % Beispiel: Spätere Phase (Tag/Aktivität)
-    ZOOM_DUR_MIN     = 5;  % 5 Minuten Dauer
+    % Konstanten 
+    ZOOM1_START_HOUR = 2;  
+    ZOOM2_START_HOUR = 10; 
+    ZOOM_DUR_MIN     = 5; 
     ZOOM_DUR_SEC     = ZOOM_DUR_MIN * 60;
     FIG_POS          = [200, 200, 1000, 600];
 
@@ -21,7 +21,7 @@ function plot_rr_zoom(rr_times, rr_intervals, config)
 
     figure('Name', 'RR-Tachogramm: Zoomdarstellungen', 'Position', FIG_POS);
 
-    % Zoom 1 plotten (Anzeige in Minuten für bessere Lesbarkeit)
+    % Zoom 1 plotten (Anzeige in Minuten)
     subplot(2,1,1);
     plot(time_hours(idx1) * 60, rr_intervals(idx1), 'b.-'); 
     title(sprintf('Zoom 1: Zeitabschnitt ab Stunde %d (%d Minuten Dauer)', ZOOM1_START_HOUR, ZOOM_DUR_MIN));
