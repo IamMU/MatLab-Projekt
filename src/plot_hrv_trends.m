@@ -4,13 +4,14 @@
 % (Sympathikus/Parasympathikus) über den Langzeitverlauf zu zeigen.
 % =========================================================================
 function plot_hrv_trends(time_windows, hrv_results, config)
-    % Konstanten für die Visualisierung
+    % Konstanten 
     SEC_TO_HOURS = 3600;
     LINE_WIDTH   = 1.5;
     FIG_POS      = [150, 150, 800, 800];
 
     time_hours = time_windows / SEC_TO_HOURS;
     
+    % Plot erstellen
     figure('Name', 'HRV Trends', 'Position', FIG_POS);
     
     subplot(3,1,1);

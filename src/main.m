@@ -1,7 +1,6 @@
 clear; clc; close all;
 
-%---Konfiguration & Konstanten ---
-
+% --- Konfiguration & Konstanten 
 src_dir = fileparts(mfilename('fullpath'));
 
 config.paths.data = fullfile(src_dir, '..', 'data', '06-51-02.EDF');
@@ -27,7 +26,7 @@ config.bands.hf  = [0.15, 0.40];
 % Ordner für Ergebnisse, falls nicht vorhanden
 if ~exist(config.paths.results, 'dir'), mkdir(config.paths.results); end
 
-%% --- Pipeline Ausführung ---
+%% --- Pipeline Ausführung
 fprintf('Lade EKG Daten...\n');
 [ecg_signal, fs, t] = load_ecg_data(config.paths.data);
 
@@ -49,22 +48,22 @@ fprintf('Berechne gleitendes FFT-Spektrum...\n');
 fprintf('Berechne HRV-Frequenzbänder...\n');
 hrv_results = calculate_hrv_bands(spectra, freqs, config);
 
-%% --- Visualisierung & Performance-Messung ---
+%% --- Visualisierung & Performance-Messung 
 fprintf('\nErstelle Visualisierungen im chronologischen Ablauf...\n');
 
-% 1. Vorverarbeitung & Signalgüte (Aufgabe 2.2 & 2.3)
+% Vorverarbeitung & Signalgüte (Aufgabe 2.2 & 2.3)
 plot_preprocessing(t, ecg_signal, ecg_clean, config);
 plot_r_peaks(t, ecg_clean, r_peaks_loc, r_peaks_val, config);
 
-% 2. RR-Intervalle (Zeitbereich) (Aufgabe 2.4)
+% RR-Intervalle (Zeitbereich) (Aufgabe 2.4)
 plot_longterm_rr(rr_times, rr_intervals, config);
 plot_rr_zoom(rr_times, rr_intervals, config);
 
-% 3. Frequenzbereich & Spektren (Aufgabe 2.9 & 2.10)
+% Frequenzbereich & Spektren (Aufgabe 2.9 & 2.10)
 plot_waterfall(spectra, freqs, time_windows, config);
 plot_hrv_trends(time_windows, hrv_results, config);
 
-% 4. Statistische Auswertung (Aufgabe 2.11)
+% Statistische Auswertung (Aufgabe 2.11)
 compare_time_segments(time_windows, hrv_results, config);
 
 fprintf('\nAlle Ergebnisse wurden erfolgreich im Ordner "%s" gespeichert!\n', config.paths.results);

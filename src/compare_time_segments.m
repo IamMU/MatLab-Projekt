@@ -3,8 +3,7 @@
 % Teilt die Daten z.B. in erste und zweite Hälfte (oder Tag/Nacht) 
 % auf und erstellt Boxplots zum Vergleich der Parameter.
 % =========================================================================
-function compare_time_segments(time_windows, hrv_results, config)
-    
+function compare_time_segments(time_windows, hrv_results, config) 
     num_windows = length(time_windows);
     mid_point = floor(num_windows / 2);
     

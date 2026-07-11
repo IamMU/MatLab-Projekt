@@ -22,9 +22,9 @@ function ecg_clean = preprocess_ecg(ecg_signal, fs, config)
     % Butterworth-Bandsperre 2. Ordnung entwerfen und anwenden
     [b, a] = butter(2, Wn, 'stop');
     
-    % WICHTIG: Filter auf ecg_clean anwenden, um den Highpass nicht zu überschreiben!
+    % Filter auf ecg_clean um Highpass nicht zu überschreiten
     ecg_clean = filtfilt(b, a, ecg_clean);
     
-    % 3. Hochfrequentes Rauschen filtern (Lowpass)
+    % Hochfrequentes Rauschen filtern (Lowpass)
     ecg_clean = lowpass(ecg_clean, config.preproc.lp_cutoff, fs);
 end

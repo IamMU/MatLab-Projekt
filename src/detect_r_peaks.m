@@ -5,7 +5,7 @@
 % Bewegungsartefakten zu sein.
 % =========================================================================
 function [r_peaks_val, r_peaks_loc] = detect_r_peaks(ecg_signal, fs)
-    % Konstanten definieren
+    % Konstanten
     MIN_RR_DIST_SEC = 0.3;         % Entspricht max. 200 BPM
     STD_MULTIPLIER  = 2.5;         % Primärer Schwellenwert-Faktor
     FALLBACK_PEAKS  = 10;          % Mindestanzahl für Fallback-Auslösung

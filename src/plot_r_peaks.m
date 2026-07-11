@@ -5,9 +5,9 @@
 % mit Markern (rote Sterne) über das Signal zu legen.
 % =========================================================================
 function plot_r_peaks(t, ecg_clean, r_peaks_loc, r_peaks_val, config)
-    % --- Konstanten ---
+    % Konstanten
     SEGMENT_START_SEC = 3600; 
-    SEGMENT_DUR_SEC   = 10;   % 10 Sekunden für gute Erkennbarkeit der Peaks
+    SEGMENT_DUR_SEC   = 10;  
     FIG_POS           = [150, 150, 800, 400];
     MARKER_STYLE      = 'r*';
     MARKER_SIZE       = 8;
@@ -16,7 +16,6 @@ function plot_r_peaks(t, ecg_clean, r_peaks_loc, r_peaks_val, config)
     idx = (t >= SEGMENT_START_SEC) & (t <= (SEGMENT_START_SEC + SEGMENT_DUR_SEC));
 
     % Relevante R-Zacken für diesen Zeitabschnitt filtern
-    % find(idx,1,'first') gibt den globalen Array-Index des Abschnittsstarts
     idx_start = find(idx, 1, 'first');
     idx_end   = find(idx, 1, 'last');
     
