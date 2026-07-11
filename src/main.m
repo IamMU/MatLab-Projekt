@@ -51,9 +51,14 @@ hrv_results = calculate_hrv_bands(spectra, freqs, config);
 
 %% --- Visualisierung ---
 fprintf('Erstelle Plots...\n');
+
 plot_longterm_rr(rr_times, rr_intervals, config);
 plot_waterfall(spectra, freqs, time_windows, config);
 plot_hrv_trends(time_windows, hrv_results, config);
 compare_time_segments(time_windows, hrv_results, config);
+plot_preprocessing(t, ecg_signal, ecg_clean, config);
+plot_r_peaks(t, ecg_clean, r_peaks_loc, r_peaks_val, config);
+plot_rr_zoom(rr_times, rr_intervals, config);
+
 
 fprintf('Analyse erfolgreich abgeschlossen!\n');
