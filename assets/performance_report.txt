@@ -1,0 +1,7 @@
+--- HRV-Projekt: Performance-Analyse ---
+Vorverarbeitung     : 82.4841 Sekunden
+R-Peak Erkennung    : 6.5244 Sekunden
+FFT-Berechnung      : 0.0280 Sekunden
+Visualisierung      : 10.0627 Sekunden
+
+Speicherbedarf (Rohsignal): 663.75 MB
