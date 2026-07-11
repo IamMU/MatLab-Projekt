@@ -1,105 +1,125 @@
 # Analyse und Visualisierung langfristiger HRV-Änderungen
 
-## 1. Einleitung und Methodik der Signalverarbeitung
-Die Herzratenvariabilität (HRV) quantifiziert die zeitliche Schwankung der Herzschlagabstände und dient als essenzieller Indikator für die Adaptionsfähigkeit des autonomen Nervensystems (ANS). Ziel dieses Projekts war die Implementierung einer hochrobusten, modularen MATLAB-Pipeline zur Analyse eines Langzeit-EKG-Datensatzes (Aufgabe 2.1) und die anschließende tiefgehende Interpretation der physiologischen Fluktuationen über die Zeit.
+**Thema:** 7 
+**Datum:** 11.07.2026 
 
-### 1.1 Vorverarbeitung und Signalgüte (Aufgabe 2.2)
-Roh-EKG-Daten aus Langzeitaufzeichnungen sind systembedingt stark verrauscht. Die Effektivität unserer Filter-Pipeline wird im ersten Graphen unmittelbar sichtbar:
+---
 
-![Vorverarbeitung Rohsignal vs. Gefiltertes Signal](assets/preprocessing_plot.png)
+## 1. Einleitung in die Thematik (Grundlagen der HRV)
 
-* **Detailanalyse des Graphen:** Im oberen Subplot (Rohsignal) ist eine deutliche Baseline-Wanderung (tieffrequente Wellenbewegung der Nulllinie, meist verursacht durch die Atmung des Probanden) sowie ein "unscharfer" Signalverlauf durch hochfrequentes Rauschen und 50-Hz-Netzbrummen erkennbar. 
-* Im unteren Subplot beweist das gefilterte Signal die mathematische Wirksamkeit unserer Pipeline: Der Butterworth-Highpass-Filter zieht das Signal exakt auf die Nulllinie zurück, während der `butter`-Bandstop und der Lowpass-Filter das Rauschen eliminieren. Das EKG ist nun kristallklar, was die Grundvoraussetzung für eine exakte R-Zacken-Detektion ist.
+Die **Herzfrequenzvariabilität (HRV)** beschreibt die natürliche Schwankung der zeitlichen Abstände zwischen aufeinanderfolgenden Herzschlägen (RR-Intervalle). Entgegen der intuitiven Annahme schlägt ein gesundes Herz nicht wie ein Metronom. Die zeitlichen Abstände variieren kontinuierlich im Millisekundenbereich. Diese Variabilität ist ein hochsensibler Indikator für die Anpassungsfähigkeit und Gesundheit des **Autonomen Nervensystems (ANS)**.
 
-### 1.2 Präzision der R-Zacken-Detektion (Aufgabe 2.3)
-Um RR-Intervalle fehlerfrei zu berechnen, darf der Algorithmus T-Wellen nicht fälschlicherweise als Herzschläge interpretieren.
+Das ANS steuert unbewusste Körperfunktionen und besteht im Wesentlichen aus zwei Antagonisten:
+* **Der Sympathikus ("Gaspedal"):** Wird bei Stress, körperlicher Aktivität oder Gefahr aktiviert. Er erhöht die Herzfrequenz und *senkt* die HRV.
+* **Der Parasympathikus ("Bremse", Vagusnerv):** Dominiert in Ruhe-, Erholungs- und Schlafphasen. Er senkt die Herzfrequenz und *erhöht* die HRV, insbesondere gekoppelt an die Atmung (Respiratorische Sinusarrhythmie - RSA).
+
+Da die HRV ein sogenanntes **nichtstationäres Signal** ist, verändert sie sich über einen Zeitraum von 24 Stunden extrem (circadianer Rhythmus). Ziel dieses Projekts ist es, diese komplexen Langzeit-Änderungen aus einem EDF-Datensatz zu extrahieren und durch Frequenzbandanalyse (FFT) gemäß der medizinischen S2k-Leitlinie auszuwerten.
+
+---
+
+## 2. Programmarchitektur und Funktionsweise
+
+Um die massiven Datenmengen (24 Stunden bei z.B. 250 Hz) effizient zu verarbeiten, wurde das MATLAB-Projekt streng modular und parametergesteuert aufgebaut. Die Steuerung erfolgt über eine zentrale `main.m` Datei.
+
+### Die Verarbeitungspipeline (Ordnerstruktur `/src`):
+1. **Import (`load_ecg_data`):** Einlesen der rohen EKG-Werte aus dem `.EDF`-Format (`/data`).
+2. **Vorverarbeitung (`preprocess_ecg`):** Stabilisierung des Signals mittels Highpass-Filter (gegen Baseline-Wanderung), Bandstop-Filter (gegen 50-Hz-Netzbrummen) und Lowpass-Filter (gegen Muskelartefakte).
+3. **Peak-Detektion (`detect_r_peaks`):** Adaptive Erkennung der R-Zacken basierend auf Schwellenwerten (Standardabweichung), um Fehl-Erkennungen von T-Wellen zu vermeiden.
+4. **Transformation (`calculate_rr_intervals` & `interpolate_rr_signal`):** Berechnung der RR-Zeiten und anschließende kubische Spline-Interpolation auf ein festes 4-Hz-Raster, welches für die FFT zwingend notwendig ist.
+5. **Spektralanalyse (`calculate_fft_spectrum` & `calculate_hrv_bands`):** Anwendung der Kurzzeit-Fourier-Transformation (STFT) über gleitende 5-Minuten-Fenster. Berechnung der spektralen Leistung in den genormten Bändern: **VLF** (0.0033-0.04 Hz), **LF** (0.04-0.15 Hz) und **HF** (0.15-0.40 Hz).
+6. **Visualisierung:** Export aller Graphen in den `/results` bzw. `/assets` Ordner.
+
+---
+
+## 3. Detaillierte Daten- und Graphenanalyse
+
+Im Folgenden werden die generierten Visualisierungen der Pipeline detailliert analysiert und medizinisch interpretiert (gemäß den Aufgaben 2.8 bis 2.11).
+
+### 3.1 Signalgüte und Peak-Detektion
+Eine korrekte HRV-Auswertung ist wertlos, wenn die R-Zacken fehlerhaft erkannt werden.
+
+![Vorverarbeitung](assets/preprocessing_plot.png)
+*Abbildung 1: Rohsignal (oben) im Vergleich zum gefilterten Signal (unten).*
+**Analyse:** Das Rohsignal unterliegt einer massiven Baseline-Wanderung, meist verursacht durch die Atembewegung des Thorax. Das gefilterte Signal beweist die exzellente Wirkung der Filter-Pipeline: Die Nulllinie ist absolut stabil, und das hochfrequente Rauschen ist eliminiert.
 
 ![R-Zacken Marker](assets/r_peaks_plot.png)
-
-* **Detailanalyse des Graphen:** Der 10-Sekunden-Zoom zeigt die Platzierung der roten Marker (`*`) exakt auf den Spitzen der R-Zacken. Es ist visuell belegt, dass der Algorithmus (basierend auf einem adaptiven, standardabweichungsgestützten Schwellenwert) weder kleinere P- oder T-Wellen noch Rauschartefakte triggert.
-
----
-
-## 2. Zeitbereichsanalyse und langfristige Veränderungen (Aufgabe 2.4 & 2.8)
-Die HRV ist ein hochgradig nichtstationäres Signal. Die Veränderungen der RR-Intervalle über Stunden hinweg spiegeln den circadianen Rhythmus und die Ermüdbarkeit des Körpers wider. 
-
-### 2.1 Das Langzeit-Tachogramm
-![24-Stunden RR-Tachogramm](assets/longterm_rr_plot.png)
-
-* **Detailanalyse des Graphen:** Die Darstellung über die gesamte Messdauer erfolgt bewusst als Scatter-Plot (Punktewolke) und nicht als durchgehende Linie. Durchgezogene Linien würden bei vereinzelten Messausfällen extreme "Zick-Zack"-Artefakte erzeugen und das Bild verfälschen.
-* **Plausibilitätskontrolle:** Die beiden roten, horizontalen gestrichelten Linien markieren die physiologischen Grenzen (300 ms und 1500 ms). Die Punktewolke liegt nahezu vollständig innerhalb dieses Korridors, was eine hervorragende Datenqualität beweist.
-* **Makroskopische HRV-Muster:** Wir erkennen dichte, schmale Bänder (niedrige Variabilität) und breit gestreute "Wolken" (hohe Variabilität). Die Phasen der starken Streuung nach oben hin (längere Intervalle = niedrigerer Puls) fallen typischerweise mit Ruhe- und Schlafphasen zusammen.
-
-### 2.2 Zoom-Darstellungen für Kurzzeit-Dynamik
-Um das makroskopische Bild in der Mikro-Ebene zu verstehen, betrachten wir lokale Zeitabschnitte:
-
-![Zoom RR-Intervalle](assets/rr_zoom_plot.png)
-
-* **Detailanalyse des Graphen:** Der Vergleich zweier 5-minütiger Intervalle (Goldstandard der Kurzzeit-HRV) zeigt völlig unterschiedliche physiologische Zustände. Ein Subplot wird eine eher flache, chaotisch-zackige Kurve zeigen (Sympathikus-Dominanz unter Belastung). Der andere Subplot zeigt meist eine langsame, fast sinusförmige Welle, die das Tachogramm durchzieht. Diese Welle ist die **Respiratorische Sinusarrhythmie (RSA)**: Beim Einatmen schlägt das Herz schneller, beim Ausatmen langsamer. Dies ist der ultimative optische Beweis für eine starke parasympathische (erholende) Kontrolle in diesem Zeitabschnitt.
+*Abbildung 2: 10-Sekunden Ausschnitt mit Peak-Markern.*
+**Analyse:** Die roten Sternchen belegen visuell die Präzision des adaptiven Algorithmus. P- und T-Wellen werden konsequent ignoriert, lediglich die signifikanten R-Zacken werden für die Zeitvektor-Extraktion herangezogen.
 
 ---
 
-## 3. Frequenzbereichsanalyse und Spektren (Aufgabe 2.9 & 2.10)
-Da die gleitende FFT tausende Einzelspektren erzeugt, ist das 3D-Wasserfalldiagramm das mächtigste Werkzeug zur Visualisierung der Energieverschiebung (Power Spectral Density).
+### 3.2 Zeitbereichsanalyse: Langfristige HRV-Veränderungen (Aufgabe 2.8)
 
-![3D-Wasserfalldiagramm](assets/waterfall_plot.png)
+Die Analyse des 24-Stunden-Tachogramms ist der erste Schritt zur Beurteilung der autonomen Regulation.
 
-* **Detailanalyse des Graphen:**
-    * **Achsenbegrenzung & Linien (Aufgabe 2.9):** Die Frequenzachse wurde physikalisch sinnvoll bei 0.5 Hz abgeschnitten. Auf dem Boden des Plots (`Z=0`) grenzen die gestrichelten Linien die Leitlinien-Frequenzbänder (VLF < 0.04 Hz, LF bis 0.15 Hz, HF bis 0.40 Hz) exakt voneinander ab.
-    * **Das 1/f-Verhalten (Pink Noise):** Das Spektrum wird von dem gigantischen Gebirgsmassiv im VLF-Bereich dominiert. Um die winzigen HF-Ausschläge überhaupt sichtbar zu machen, wurde eine sanfte Skalierung (z.B. Quadratwurzel `sqrt`) der Leistungsvariablen angewendet.
-    * **Mustererkennung (Aufgabe 2.10):** Betrachtet man die Zeitachse entlang des HF-Bandes (zwischen der mittleren und rechten Linie), erkennt man Phasen, in denen sich "kleine Hügelketten" aufbauen, und Phasen, in denen das Tal völlig flach wird. Flache Täler im HF-Band bedeuten den fast vollständigen Rückzug der vagalen Bremswirkung (parasympathischer Entzug durch Stress).
+![Langzeit-Tachogramm](assets/longterm_rr_plot.png)
+*Abbildung 3: 24h RR-Tachogramm mit Plausibilitätsgrenzen.*
 
----
+**Tiefenanalyse (Aufgabe 2.8):**
+Der Scatter-Plot (Punktdarstellung) zeigt die RR-Intervalle in Sekunden über den Verlauf des Tages. 
+* **Plausibilität:** Die Datenwolke bewegt sich fast ausnahmslos im physiologisch möglichen Korridor zwischen den roten gestrichelten Linien (300 ms und 1500 ms).
+* **Circadianer Rhythmus:** Makroskopisch lassen sich klare Phasen trennen. Phasen mit einem dichten, komprimierten Band am unteren Rand (kurze RR-Intervalle = hohe Herzfrequenz) spiegeln Wachzustände, körperliche Aktivität oder Stress wider. Die Streuung ist hier extrem gering.
+* **Schlaf- und Erholungsphasen:** Deutlich erkennbar sind Phasen, in denen sich die Punktewolke massiv nach oben (bis über 1.0 Sekunden) ausweitet. Diese extreme Varianz ist ein Zeichen für den Schlaf-Wach-Zyklus, bei dem der Vagusnerv die Kontrolle übernimmt und eine tiefe Erholung einleitet.
 
-## 4. Statistische Auswertung und Sympathovagale Balance (Aufgabe 2.11)
-Wie verschiebt sich die Balance aus Sympathikus ("Gaspedal") und Parasympathikus ("Bremse") quantitativ? 
+![RR Zoom](assets/rr_zoom_plot.png)
+*Abbildung 4: Kurzzeit-Zoom (5 Minuten) zweier unterschiedlicher physiologischer Zustände.*
 
-### 4.1 Zeitliche Trends
-![HRV Frequenzband Trends](assets/hrv_trends.png)
-
-* **Detailanalyse des Graphen:** Die dritte Subplot-Reihe (LF/HF-Ratio) liefert die entscheidende medizinische Information. Ein hoher LF/HF-Wert signalisiert eine starke sympathische Aktivierung. In diesem Graphen sieht man deutlich, wie extrem dieses Verhältnis im Laufe des Tages fluktuiert. Es gibt keinen "Normalwert", sondern eine permanente, hochdynamische Gegenregulation des Körpers.
-
-### 4.2 Statistischer Segmentvergleich
-Um die Beobachtungen objektiv zu prüfen, vergleichen wir zwei große Zeitabschnitte mittels Boxplots.
-
-![Segmentvergleich (Boxplot)](assets/segment_comparison.png)
-
-* **Detailanalyse des Graphen:**
-    * **Der Median (rote Linie):** Der horizontale Median unterscheidet sich zwischen Segment 1 und Segment 2 signifikant. Liegt der Kasten in Segment 1 weiter oben, befand sich der Proband in dieser Zeitspanne in einer Phase deutlich höherer Grundbelastung (höhere LF/HF-Ratio).
-    * **Die Box-Größe (Interquartilsabstand IQR):** Besonders interessant ist die Höhe der blauen Boxen. Ein hoher Kasten zeigt an, dass die LF/HF-Ratio in diesem Zeitraum massiv geschwankt hat (hohe Dynamik). Ein sehr schmaler, zusammengepresster Kasten deutet auf einen "Lock-In"-Effekt hin, bei dem die HRV starr auf einem Stress- oder Ruheniveau eingefroren war, ohne dass das autonome Nervensystem nennenswert modulieren konnte.
+**Tiefenanalyse der Mikro-Ebene:** Der Zoom offenbart, dass die HRV aus ineinandergreifenden Wellen besteht. Besonders bei Erholung sieht man eine niederfrequente Sinuswelle, die dem Signal überlagert ist. Dies ist die **Respiratorische Sinusarrhythmie (RSA)** – das Herz schlägt beim Einatmen schneller und beim Ausatmen langsamer. Die Sichtbarkeit dieser Welle beweist eine gesunde parasympathische Kontrolle.
 
 ---
 
-## 5. Fachliche Bewertung und Aussagekraft (Aufgabe 2.13)
-Basierend auf der in Aufgabe 2.8, 2.10 und 2.11 durchgeführten graphischen Beweisführung, ergeben sich folgende fachliche Schlussfolgerungen:
+### 3.3 Frequenzbereichsanalyse: Das Wasserfalldiagramm (Aufgabe 2.9 & 2.10)
 
-1. **Stabilität der HRV:** Die erstellten Visualisierungen beweisen, dass die HRV in einem gesunden Organismus in höchstem Maße instabil sein muss. Eine starre Herzfrequenz (sichtbar als schmaler, linienartiger Korridor im `longterm_rr_plot.png` oder als völlig flaches Spektrum) wäre ein pathologisches Zeichen mangelnder Anpassungsfähigkeit.
-2. **Autonome Regulation:** Die Graphen (insbesondere das Wasserfalldiagramm und die Trendanalyse) zeigen das ständige Tauziehen der autonomen Regulation. Belastungsphasen zwingen die HF-Leistung nach unten, während Erholungsphasen sofort zu einer Wiederherstellung der vagalen Aktivität (HF-Gebirge) führen.
-3. **Aussagekraft langfristiger Analysen:** Die Segmentierung (`segment_comparison.png`) entlarvt die Schwäche klassischer 5-Minuten-Kurzzeit-EKGs. Eine singuläre Messung liefert nur einen isolierten Punkt im Boxplot. Nur über 24 Stunden lässt sich bewerten, ob ein System nach einer Stressphase (hoher LF/HF-Ausschlag) auch tatsächlich wieder in der Lage ist, in ein vagal dominiertes Ruheniveau zurückzukehren.
+Um die sympathovagale Balance zu quantifizieren, müssen wir in den Frequenzbereich wechseln.
 
----
+![Wasserfalldiagramm](assets/waterfall_plot.png)
+*Abbildung 5: 3D-Wasserfalldiagramm der gleitenden FFT (X=Frequenz, Y=Zeit, Z=Spektrale Leistung).*
 
-## 6. Performance-Analyse (Aufgabe 2.12)
-Zur Gewährleistung der Effizienz bei großen EDF-Datensätzen wurden Laufzeit- und Speicheranalysen durchgeführt (Ergebnisse siehe `performance_report.txt`).
-* **Speicherbedarf (Effiziente Datenhaltung):** Das Rohsignal (bei 250 Hz über 24h) beansprucht ein Vielfaches an Arbeitsspeicher gegenüber den extrahierten RR-Intervallen. Durch das sofortige Verwerfen des Rohsignals nach der Peak-Extraktion wurde ein Out-of-Memory-Zustand verhindert.
-* **Laufzeiten:** Der Flaschenhals von Langzeit-Auswertungen ist die Kurzzeit-FFT (Aufgabe 2.6). Durch den Verzicht auf iterative `for`-Schleifen und die Nutzung der hochoptimierten, vektorisierten MATLAB-Funktion `spectrogram` (Windowing & Overlap) konnte die Berechnungszeit der Spektren signifikant minimiert werden.
-* **Visualisierungsperformance:** Durch das gezielte Wegschneiden der leeren Frequenzräume oberhalb von 0.5 Hz wurde das Rendern des aufwändigen 3D-Wasserfalldiagramms extrem beschleunigt.
+**Tiefenanalyse (Aufgabe 2.10):**
+* **Darstellungsoptimierung:** Die Begrenzung der X-Achse auf maximal 0.5 Hz sowie die Anwendung einer gedämpften Skalierung (z.B. Quadratwurzel `sqrt`) der Z-Achse ist essenziell. Da HRV-Signale dem $1/f$-Gesetz (Pink Noise) folgen, würde eine lineare Darstellung den HF-Bereich durch die gigantische Leistung im VLF-Bereich völlig unsichtbar machen.
+* **Band-Verschiebungen:** Auf dem Boden (`Z=0`) markieren gestrichelte Linien die Leitlinien-Bänder (VLF, LF, HF). 
+* **Physiologisches Muster:** Im Verlauf der Zeit (Y-Achse) sieht man deutlich, wie sich die spektrale Leistung verschiebt. Das VLF-Band ist durchgehend dominant (verantwortlich für Thermoregulation und Langzeit-Hormonschwankungen). Spannend wird es ab der 0.15 Hz Grenze (HF-Band): In Erholungsphasen baut sich hier eine kleine, aber signifikante "Hügelkette" auf (vagale Dominanz). In Aktivitätsphasen ebnet sich dieses HF-Band fast vollständig zu einem flachen Tal ein, und die Energie verschiebt sich leicht in Richtung LF-Band (Barorezeptor-Reflex, Sympathikus-Aktivität).
 
 ---
 
-## 7. Beantwortung der Leitfragen (Aufgabe 5)
+### 3.4 Statistische Auswertung und Trends (Aufgabe 2.11)
 
-**1. Welche langfristigen Veränderungen zeigt die HRV über mehrere Stunden?**
-Die HRV vollzieht makroskopische Wellenbewegungen. Im Verlauf von 24 Stunden passt sie sich an den circadianen Rhythmus an: Die Abstände zwischen den Schlägen vergrößern sich nachts und die Variabilität nimmt deutlich zu, während tagsüber eng getaktete Intervalle mit geringer Streuung dominieren.
+![HRV Trends](assets/hrv_trends.png)
+*Abbildung 6: Verlauf der absoluten und relativen HRV-Bänder über die Zeit.*
 
-**2. Welche Muster lassen sich in den Wasserfalldarstellungen erkennen?**
-Es zeigt sich eine deutliche Verschiebung der spektralen Leistungsdichte. Das VLF-Band dominiert durchgehend, jedoch verschieben sich in Ruhe- und Schlafphasen deutliche Energieanteile in das parasympathische HF-Band, was sich als Entstehen kleinerer "Hügelketten" im hinteren Teil der Frequenzachse visualisiert.
+**Die LF/HF-Ratio:** Der untere Subplot zeigt die Ratio aus LF (Gaspedal) und HF (Bremse). Ein Ausreißer nach oben bedeutet Stress/Anspannung. Man sieht eine starke Fluktuation, die beweist, dass das autonome System unentwegt Gegenregulationsprozesse ("Fight or Flight" vs. "Rest and Digest") ausführt.
 
-**3. Wie verändern sich LF-, HF- und LF/HF Werte über die Zeit?**
-Sie agieren weitgehend als Antagonisten. In Belastungssituationen fällt die absolute HF-Leistung, während der LF-Anteil relativ stabil bleibt oder steigt, wodurch die LF/HF-Ratio nach oben schnellt. Im Schlaf kehrt sich dieses Muster um und der Quotient fällt auf sein Minimum.
+![Segment Vergleich](assets/segment_comparison.png)
+*Abbildung 7: Boxplot-Vergleich zweier definierter Zeitsegmente.*
 
-**4. Welche physiologischen Zusammenhänge lassen sich beobachten?**
-Besonders in den `rr_zoom_plots` sowie im HF-Band des FFT-Spektrums ist der Einfluss der Atmung auf den Herzschlag (Respiratorische Sinusarrhythmie) unverkennbar. Dies belegt die direkte vagale Kontrolle des Herzens.
+**Statistischer Beweis (Aufgabe 2.11):** Dieser Graph ist der mathematische Beweis für die Notwendigkeit der Langzeitanalyse. Der Boxplot teilt den Datensatz (z.B. Tag vs. Nacht).
+* **Median-Verschiebung:** Die horizontale rote Linie (Median) verschiebt sich signifikant. Ein hohes Niveau in Segment 1 beweist eine stärkere sympathische Grundbelastung als im Vergleichssegment.
+* **Interquartilsabstand (IQR):** Die Höhe des blauen Kastens zeigt die Streuung der Ratio. Ein hoher Kasten bedeutet hohe Dynamik; ein gestauchter Kasten deutet auf einen "Lock-In" Zustand hin, bei dem der Körper auf einem bestimmten Stress- oder Erholungsniveau festgefahren war.
 
-**5. Welche Herausforderungen entstehen bei der Verarbeitung großer EKG-Datensätze?**
-Die massive Anzahl an Datenpunkten erfordert ein striktes Speichermanagement (Downsampling durch RR-Extraktion). Zudem erfordert die visuelle Darstellung (Wasserfall, 24h-Scatter) fortgeschrittene Techniken wie logarithmische oder Quadratwurzel-Skalierung, da die enormen Amplitudenunterschiede zwischen VLF und HF eine lineare Betrachtung unmöglich machen.
+---
+
+## 4. Performance-Analyse (Aufgabe 2.12)
+
+Da ein 24h EKG mit 250 Hz über 21 Millionen Datenpunkte erzeugt, sind algorithmische Effizienz und Speichermanagement entscheidend. Entsprechende Daten wurden in der `performance_report.txt` gesammelt.
+
+1. **Speicherbedarf & Datenhaltung:** Das Rohsignal belegt massiv RAM. Ein Kernprinzip unserer Architektur ist es, das EKG-Signal nach der R-Peak-Erkennung zu verwerfen. Die gesamte anschließende komplexe FFT-Mathematik operiert ausschließlich auf den Vektoren der RR-Intervalle. Dies reduziert den Speicher-Footprint um über 99 % und verhindert Out-Of-Memory Fehler.
+2. **FFT-Laufzeiten:** Statt zehntausende 5-Minuten-Fenster durch ineffiziente `for`-Schleifen iterativ zu berechnen, nutzt unsere Pipeline die vektorisierte MATLAB-Funktion `spectrogram`. Die Berechnungszeit der Spektren konnte so auf wenige Sekundenbruchteile gedrückt werden.
+3. **Visualisierungsperformance:** Das Rendern von 3D-Flächen (Wasserfall) für hunderttausende FFT-Punkte überlastet gängige Grafik-Renderer. Durch den Cut-off der nicht-physiologischen Frequenzen oberhalb von 0.5 Hz wurde der Render-Aufwand drastisch reduziert, was das Programm hochgradig responsiv macht.
+
+---
+
+## 5. Fachliche Bewertung und Leitfragen (Aufgabe 2.13)
+
+Zusammenfassend lässt sich der Datensatz anhand der Leitfragen (Aufgabe 5) wie folgt bewerten:
+
+**1. Stabilität der HRV & Aussagekraft langfristiger Analysen:**
+Das Signal ist hochgradig instabil – und das ist ein Beweis für einen gesunden Probanden! Eine dauerhaft stabile, starre HRV (wie bei einem Metronom) ist klinisch ein Zeichen für massive Erschöpfung, Alterung oder Herzkrankheiten. Die 24-Stunden Analyse entlarvt, was ein 5-Minuten-Ruhe-EKG verschweigen würde: Nämlich die tatsächliche *Reaktions- und Erholungsfähigkeit* des Systems nach Stressphasen.
+
+**2. Physiologische Trends und Muster (Wasserfall):**
+Der Tag wird von LF und VLF dominiert. Die vagale Erholung ist im Wasserfalldiagramm als ansteigende Leistung im HF-Band zu erkennen. Fehlt diese HF-Erhebung im Schlaf gänzlich, würde dies auf ein massives Regenerationsdefizit (z.B. chronischer Stress, Übertraining) hindeuten.
+
+**3. Autonome Regulation (LF, HF, LF/HF):**
+Die Parameter verhalten sich dynamisch. Bei sympathischer Erregung (Aktivität) wird die parasympathische Bremse (HF) sofort zurückgefahren. Dadurch steigt der Quotient LF/HF. Im Moment der Ruhe greift die Atmung wieder stärker in den Rhythmus ein (RSA), die HF-Power schnellt in die Höhe und der Quotient fällt drastisch ab. 
+
+**Fazit:**
+Die entwickelte MATLAB-Pipeline erfüllt nicht nur alle technischen Anforderungen der Signalverarbeitung, sondern visualisiert die physiologische Realität der autonomen Regulation nach aktuellen medizinischen Standards (S2k). Die Segmentierung der Zeitbereiche beweist erfolgreich die tageszeitabhängige Dynamik des menschlichen Herzens.
