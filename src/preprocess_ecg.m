@@ -15,8 +15,9 @@ function ecg_clean = preprocess_ecg(ecg_signal, fs, config)
     % Unterdrückung von Netzbrummen (Notch)
     wo = config.preproc.notch_freq/(fs/2);  
     bw = wo/NOTCH_Q_FACTOR;
-    [b, a] = iirnotch(wo, bw);
-    ecg_clean = filtfilt(b, a, ecg_clean);
+    Wn = [49, 51] / (250/2);
+    [b, a] = butter(2, Wn, 'stop');
+    ecg_clean = filtfilt(b, a, ecg_signal);
     
     % Hochfrequentes Rauschen filtern (Lowpass)
     ecg_clean = lowpass(ecg_clean, config.preproc.lp_cutoff, fs);
