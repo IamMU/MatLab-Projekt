@@ -14,7 +14,7 @@ Die Graphen werden unter results/ gespeichert.
 - src/ - stores the source code
 
 ## Last Generated Plots
-![HRV_Trends](results/hrv_trends.png)
-![Longterm_RR](results/longterm_rr_plot.png)
-![Segment_Comparison](results/segment_comparison.png)
-![Waterfall](results/waterfall_plot.png)
+![HRV_Trends](assets/hrv_trends.png)
+![Longterm_RR](assets/longterm_rr_plot.png)
+![Segment_Comparison](assets/segment_comparison.png)
+![Waterfall](assets/waterfall_plot.png)

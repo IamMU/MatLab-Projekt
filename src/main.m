@@ -5,7 +5,7 @@ clear; clc; close all;
 src_dir = fileparts(mfilename('fullpath'));
 
 config.paths.data = fullfile(src_dir, '..', 'data', '06-51-02.EDF');
-config.paths.results = fullfile(src_dir, '..', 'results');
+config.paths.results = fullfile(src_dir, '..', 'assets');
 
 % Preprocessing-Parameter
 config.preproc.fs_target = 250; 
